@@ -1,9 +1,8 @@
-import 'package:cinemapedia/presentation/widgets/widgets.dart';
+import 'package:moviesgallery/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:moviesgallery/presentation/providers/providers.dart';
 import 'package:go_router/go_router.dart';
-
 
 class FavoritesView extends ConsumerStatefulWidget {
   const FavoritesView({super.key});
@@ -12,8 +11,8 @@ class FavoritesView extends ConsumerStatefulWidget {
   FavoritesViewState createState() => FavoritesViewState();
 }
 
-class FavoritesViewState extends ConsumerState<FavoritesView> with AutomaticKeepAliveClientMixin {
-
+class FavoritesViewState extends ConsumerState<FavoritesView>
+    with AutomaticKeepAliveClientMixin {
   bool isLastPage = false;
   bool isLoading = false;
 
@@ -22,23 +21,20 @@ class FavoritesViewState extends ConsumerState<FavoritesView> with AutomaticKeep
     super.initState();
 
     loadNextPage();
-
   }
 
   void loadNextPage() async {
-
-    if ( isLoading || isLastPage ) return;
+    if (isLoading || isLastPage) return;
     isLoading = true;
 
-    final movies = await ref.read(favoriteMoviesProvider.notifier).loadNextPage();
+    final movies =
+        await ref.read(favoriteMoviesProvider.notifier).loadNextPage();
     isLoading = false;
 
-    if ( movies.isEmpty ) {
+    if (movies.isEmpty) {
       isLastPage = true;
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,39 +42,31 @@ class FavoritesViewState extends ConsumerState<FavoritesView> with AutomaticKeep
 
     final favoriteMovies = ref.watch(favoriteMoviesProvider).values.toList();
 
-
-    if ( favoriteMovies.isEmpty ) {
+    if (favoriteMovies.isEmpty) {
       final colors = Theme.of(context).colorScheme;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon( Icons.favorite_outline_sharp, size: 60, color: colors.primary ),
-            Text('Ohhh no!!', style: TextStyle( fontSize: 30, color: colors.primary)),
-            const Text('No tienes películas favoritas', style: TextStyle( fontSize: 20 )),
-
+            Icon(Icons.favorite_outline_sharp, size: 60, color: colors.primary),
+            Text('Ohhh no!!',
+                style: TextStyle(fontSize: 30, color: colors.primary)),
+            const Text('No tienes películas favoritas',
+                style: TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             FilledButton.tonal(
-              onPressed: () => context.go('/home/0'), 
-              child: const Text('Empieza a buscar')
-            )
+                onPressed: () => context.go('/home/0'),
+                child: const Text('Empieza a buscar'))
           ],
         ),
       );
     }
 
-
-
-
     return Scaffold(
-      body: MovieMasonry(
-        loadNextPage: loadNextPage,
-        movies: favoriteMovies
-      )
-    );
+        body: MovieMasonry(loadNextPage: loadNextPage, movies: favoriteMovies));
   }
-  
+
   @override
   bool get wantKeepAlive => true;
 }

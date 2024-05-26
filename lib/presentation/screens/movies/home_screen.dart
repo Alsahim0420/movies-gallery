@@ -1,35 +1,27 @@
 import 'package:flutter/material.dart';
 
-import 'package:cinemapedia/presentation/widgets/widgets.dart';
-import 'package:cinemapedia/presentation/views/views.dart';
-
-
+import 'package:moviesgallery/presentation/widgets/widgets.dart';
+import 'package:moviesgallery/presentation/views/views.dart';
 
 class HomeScreen extends StatefulWidget {
-
   static const name = 'home-screen';
   final int pageIndex;
 
-  const HomeScreen({
-    super.key, 
-    required this.pageIndex
-  });
+  const HomeScreen({super.key, required this.pageIndex});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 //* Este Mixin es necesario para mantener el estado en el PageView
-class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin {
-
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin {
   late PageController pageController;
 
   @override
   void initState() {
     super.initState();
-    pageController = PageController(
-      keepPage: true
-    );
+    pageController = PageController(keepPage: true);
   }
 
   @override
@@ -38,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     super.dispose();
   }
 
-  final viewRoutes =  const <Widget>[
+  final viewRoutes = const <Widget>[
     HomeView(),
     PopularView(), // <--- categorias View
     FavoritesView(),
@@ -48,29 +40,28 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   Widget build(BuildContext context) {
     super.build(context);
 
-    if ( pageController.hasClients ) {
+    if (pageController.hasClients) {
       pageController.animateToPage(
-        widget.pageIndex, 
-        curve: Curves.easeInOut, 
-        duration: const Duration( milliseconds: 250),
+        widget.pageIndex,
+        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 250),
       );
     }
 
     return Scaffold(
       body: PageView(
-        //* Esto evitará que rebote 
+        //* Esto evitará que rebote
         physics: const NeverScrollableScrollPhysics(),
         controller: pageController,
         // index: pageIndex,
         children: viewRoutes,
       ),
-      bottomNavigationBar: CustomBottomNavigation( 
+      bottomNavigationBar: CustomBottomNavigation(
         currentIndex: widget.pageIndex,
       ),
     );
   }
-  
+
   @override
   bool get wantKeepAlive => true;
 }
-
